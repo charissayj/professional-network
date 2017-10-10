@@ -1,0 +1,45 @@
+<a href="/connections">All Users</a>
+<a href="logout" data-method="delete">Logout</a>
+
+<h4>Hi, <%= current_user.username.titleize %>!</h4>
+
+<p>Here is your profile description:</p>
+<div class="form-group">
+	<p><%= current_user.description %></p>
+</div>
+
+<h3>Your professional network</h3>
+<ul>
+	<% @connected.each do |user| %>
+		<li><a href="/users/<%= user.connection_id %>"><%= user.contact.username %></a></li>
+	<% end %>
+</ul>
+
+<h3>Inviatations</h3>
+<p>The following people asked you to be in their network</p>
+
+<table>
+	<thead>
+		<th>Name</th>
+		<th>Action</th>
+	</thead>
+	<tbody>
+		<% @invites.each do |inviter| %>
+            <tr>
+               <td><a href="/users/<%= inviter.id %>"><%= inviter.user.username.titleize %></a></td>
+               <td>
+                  <form action="/update/<%= inviter.user.id %>" method='post'>
+                     <input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>'>
+                     <input type='hidden' name='_method' value='patch'>
+                     <button class='btn btn-primary' type='submit'>Accept Invite</button>
+                  </form>
+                  <form action="/delete/<%= inviter.user.id %>" method='post'>
+                     <input type='hidden' name='_method' value='delete'>
+                     <input type='hidden' name='authenticity_token' value="<%= form_authenticity_token %>">
+                     <button class='btn btn-danger' type='submit'>Ignore</button>
+                  </form>
+               </td>
+            </tr>
+         <% end %>
+	</tbody>
+</table>
